@@ -1,9 +1,7 @@
-﻿using FrooxEngine;
-using HarmonyLib;
+﻿using HarmonyLib;
 using NeosModLoader;
 using NetX;
-using System.Collections.Generic;
-using System.Reflection;
+using System.Net;
 
 namespace NeosLNLRelayDisabler
 {
@@ -21,43 +19,15 @@ namespace NeosLNLRelayDisabler
             Msg("Hooks installed successfully!");
         }
 
-//        [HarmonyPatch(typeof(NetX.LNL_Manager), "GetSupportedSchemes")]
-//        class NeosLNLRelayDisablerPatch
-//        {
-//            static bool Prefix(ref List<string> schemes)
-//            {
-//                schemes.Add("lnl");
-//                return false; //try to skip original one
-//            }
-//        }
-
-        [HarmonyPatch(typeof(LNL_Connection), "ConnectToRelay")]
+        [HarmonyPatch(typeof(LNL_Implementer), "RELAY_EP")]
+        [HarmonyPatch(MethodType.Getter)]
         class NeosLNLRelayDisablerPatch2
         {
-            static bool Prefix(LNL_Connection __instance)
+            static bool Prefix(ref IPEndPoint __result)
             {
-                MethodInfo setFailReason = AccessTools.DeclaredPropertySetter(typeof(LNL_Connection), "FailReason");
-                MethodInfo setConnectionFailed = AccessTools.DeclaredPropertySetter(typeof(LNL_Connection), "ConnectionFailed");
-
-                if (setFailReason != null && setConnectionFailed != null)
-                {
-                    // this.FailReason = "World.Error.FailedConnectToRelay";
-                    setFailReason.Invoke(__instance, new object[] { "World.Error.FailedConnectToRelay" });
-
-                    // this.ConnectionFailed(this);
-                    setConnectionFailed.Invoke(__instance, new object[] { __instance });
-
-                    // skip original method
-                    Debug("Skipping LNL Relay");
-                    return false;
-                }
-                else
-                {
-                    Error("Could not invoke FailReason or ConnectionFailed setters!");
-                    return true;
-                }
+                __result = null;
+                return true; // skip the original method
             }
         }
-
     }
 }

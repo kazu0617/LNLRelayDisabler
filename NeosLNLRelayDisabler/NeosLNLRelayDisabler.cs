@@ -25,6 +25,7 @@ namespace NeosLNLRelayDisabler
         {
             static bool Prefix(ref IPEndPoint __result)
             {
+                Debug("Nulled RELAY_EP");
                 __result = null;
                 return true; // skip the original method
             }

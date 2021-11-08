@@ -1,7 +1,9 @@
 ﻿using FrooxEngine;
 using HarmonyLib;
 using NeosModLoader;
+using NetX;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace NeosLNLRelayDisabler
 {
@@ -29,12 +31,31 @@ namespace NeosLNLRelayDisabler
 //            }
 //        }
 
-        [HarmonyPatch(typeof(NetX.LNL_Connection), "ConnectToRelay")]
+        [HarmonyPatch(typeof(LNL_Connection), "ConnectToRelay")]
         class NeosLNLRelayDisablerPatch2
         {
-            static bool Prefix()
+            static bool Prefix(LNL_Connection __instance)
             {
-                return false; //try to skip original one
+                MethodInfo setFailReason = AccessTools.DeclaredPropertySetter(typeof(LNL_Connection), "FailReason");
+                MethodInfo setConnectionFailed = AccessTools.DeclaredPropertySetter(typeof(LNL_Connection), "ConnectionFailed");
+
+                if (setFailReason != null && setConnectionFailed != null)
+                {
+                    // this.FailReason = "World.Error.FailedConnectToRelay";
+                    setFailReason.Invoke(__instance, new object[] { "World.Error.FailedConnectToRelay" });
+
+                    // this.ConnectionFailed(this);
+                    setConnectionFailed.Invoke(__instance, new object[] { __instance });
+
+                    // skip original method
+                    Debug("Skipping LNL Relay");
+                    return false;
+                }
+                else
+                {
+                    Error("Could not invoke FailReason or ConnectionFailed setters!");
+                    return true;
+                }
             }
         }
 

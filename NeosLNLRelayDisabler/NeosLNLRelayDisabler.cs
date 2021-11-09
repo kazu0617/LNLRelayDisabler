@@ -1,7 +1,7 @@
-﻿using FrooxEngine;
-using HarmonyLib;
+﻿using HarmonyLib;
 using NeosModLoader;
-using System.Collections.Generic;
+using NetX;
+using System.Net;
 
 namespace NeosLNLRelayDisabler
 {
@@ -19,24 +19,16 @@ namespace NeosLNLRelayDisabler
             Msg("Hooks installed successfully!");
         }
 
-//        [HarmonyPatch(typeof(NetX.LNL_Manager), "GetSupportedSchemes")]
-//        class NeosLNLRelayDisablerPatch
-//        {
-//            static bool Prefix(ref List<string> schemes)
-//            {
-//                schemes.Add("lnl");
-//                return false; //try to skip original one
-//            }
-//        }
-
-        [HarmonyPatch(typeof(NetX.LNL_Connection), "ConnectToRelay")]
+        [HarmonyPatch(typeof(LNL_Implementer), "RELAY_EP")]
+        [HarmonyPatch(MethodType.Getter)]
         class NeosLNLRelayDisablerPatch2
         {
-            static bool Prefix()
+            static bool Prefix(ref IPEndPoint __result)
             {
-                return false; //try to skip original one
+                Debug("Nulled RELAY_EP");
+                __result = null;
+                return true; // skip the original method
             }
         }
-
     }
 }

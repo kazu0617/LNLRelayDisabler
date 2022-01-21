@@ -3,8 +3,8 @@
     <ProjectGuid>{0322B2EF-7452-479D-BAE2-FCAB75033337}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NeosLNLRelayDisabler</RootNamespace>
-    <AssemblyName>NeosLNLRelayDisabler</AssemblyName>
+    <RootNamespace>LNLRelayDisabler</RootNamespace>
+    <AssemblyName>LNLRelayDisabler</AssemblyName>
     <TargetFramework>net472</TargetFramework>
     <LangVersion>9.0</LangVersion>
     <BaseOutputPath>bin</BaseOutputPath>

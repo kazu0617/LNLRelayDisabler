@@ -3,25 +3,25 @@ using NeosModLoader;
 using NetX;
 using System.Net;
 
-namespace NeosLNLRelayDisabler
+namespace LNLRelayDisabler
 {
-    public class NeosLNLRelayDisabler : NeosMod
+    public class LNLRelayDisabler : NeosMod
     {
-        public override string Name => "NeosLNLRelayDisabler";
+        public override string Name => "LNLRelayDisabler";
         public override string Author => "kazu0617";
-        public override string Version => "1.0.0";
-        public override string Link => "https://github.com/kazu0617/NeosLNLRelayDisabler/";
+        public override string Version => "1.0.1";
+        public override string Link => "https://github.com/kazu0617/LNLRelayDisabler/";
         public override void OnEngineInit()
         {
-            Harmony harmony = new Harmony("net.kazu0617.NeosLNLRelayDisabler");
-
+            Harmony harmony = new Harmony("net.kazu0617.LNLRelayDisabler");
             harmony.PatchAll();
-            Msg("Hooks installed successfully!");
+
+            Debug("Hooks installed successfully!");
         }
 
         [HarmonyPatch(typeof(LNL_Implementer), "RELAY_EP")]
         [HarmonyPatch(MethodType.Getter)]
-        class NeosLNLRelayDisablerPatch2
+        class Patch
         {
             static bool Prefix(ref IPEndPoint __result)
             {
